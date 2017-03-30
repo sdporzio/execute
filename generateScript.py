@@ -1,6 +1,7 @@
 import os, sys, argparse
 
 def GenerateScript(inputFile,inputString,timestamp):
+    separator = '------------------------------'
     commands = 0
     cwd = os.path.dirname(os.path.realpath(__file__))
     fOut = open('%s/Scripts/%s/script.tempexe' %(cwd,timestamp),'w')
@@ -15,7 +16,7 @@ def GenerateScript(inputFile,inputString,timestamp):
         wrapCmd = '{ unbuffer time %s ; } 2>&1 | tee -a %s/Logs/%s/status%i.templog\n' %(cmd,cwd,timestamp,i)
         endTime = 'export END_TIME=$(date)\n'
         sleep = 'sleep 1\n'
-        mail = 'echo -e "---> Job completed:\\n%s\\n\\n\\n---> Start time:\\n${START_TIME}\\n---> End time:\\n${END_TIME}\\n\\n\\n---> Job end:\\n$(tail --lines=10 %s/Logs/%s/status%i.templog)\\n\\n\\n\\n\\n\\n\\n\\n---> Full job log:\\n$(less %s/Logs/%s/status%i.templog)" | mutt -s "Job \'%s\' (%s of %s) finished" salvatore.porzio@postgrad.manchester.ac.uk\n' %(cmd,cwd,timestamp,i,cwd,timestamp,i,cmd,i+1,len(commands))
+        mail = 'echo -e "---> Job completed:\\n%s\\n\\n\\n---> Start time:\\n${START_TIME}\\n---> End time:\\n${END_TIME}\\n\\n\\n---> Job end:\\n$(tail --lines=10 %s/Logs/%s/status%i.templog)\\n\\n\\n\\n%s\\n\\n\\n\\n---> Full job log:\\n$(less %s/Logs/%s/status%i.templog)" | mutt -s "Job \'%s\' (%s of %s) finished" salvatore.porzio@postgrad.manchester.ac.uk\n' %(cmd,cwd,timestamp,i,separator,cwd,timestamp,i,cmd,i+1,len(commands))
         fOut.write(startTime)
         fOut.write(printCmd)
         fOut.write(wrapCmd)
